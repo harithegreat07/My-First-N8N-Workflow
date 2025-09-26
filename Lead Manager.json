@@ -1,0 +1,411 @@
+{
+  "name": "Lead Form",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Lead Form",
+        "formDescription": "This form sends me an email eachtime I get a new lead.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "placeholder": "John Maynard Keynes",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What you want to automate?",
+              "fieldType": "textarea",
+              "placeholder": "I want to automate .....",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What is your timeframe?",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1-2 Months"
+                  },
+                  {
+                    "option": "3-4 Months"
+                  },
+                  {
+                    "option": "6-8 Months"
+                  },
+                  {
+                    "option": "8-12 Months"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What's your Budget?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "$999-$2999"
+                  },
+                  {
+                    "option": "$4999-$9999"
+                  },
+                  {
+                    "option": "$12999-$16999"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "79ba4454-96f2-4d08-80fc-205eec39750b",
+      "name": "Lead Form",
+      "webhookId": "326d4866-9759-47ff-8eac-a90a6c675bc9"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['What\\'s your Budget?'] }}",
+                    "rightValue": "$999-$2999",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "22d5771c-4efc-405b-892b-9e5cc8ed5191"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Low Budget"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f358a61b-da87-424e-b7a1-44097a0641e2",
+                    "leftValue": "={{ $json['What\\'s your Budget?'] }}",
+                    "rightValue": "$4999-$9999",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Medium Budget"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fb94b7a7-b4b4-42b1-9582-7e568731c4ad",
+                    "leftValue": "={{ $json['What\\'s your Budget?'] }}",
+                    "rightValue": "$12999-$16999",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "High Budget"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "3100000b-f252-4368-a7e4-fcc036e83be4",
+      "name": "Router"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_5595147938333169948"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        -192
+      ],
+      "id": "d7e2e41b-15d0-471a-a7ae-358dd5569f35",
+      "name": "Low Budget Lable",
+      "webhookId": "3b05f777-7dfa-4ce1-942d-3474d436a08d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CKA2KwvndK06XStJ",
+          "name": "Hari the Great"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_1749201689290374411"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "d8ba1c9f-2a73-4c8e-aa59-9e22637877c0",
+      "name": "Medium Budget Lable",
+      "webhookId": "3b05f777-7dfa-4ce1-942d-3474d436a08d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CKA2KwvndK06XStJ",
+          "name": "Hari the Great"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_3161851378824347801"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        192
+      ],
+      "id": "2e2cec87-103f-4bc5-a0e9-ce91911cd049",
+      "name": "High Budget Lable",
+      "webhookId": "3b05f777-7dfa-4ce1-942d-3474d436a08d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CKA2KwvndK06XStJ",
+          "name": "Hari the Great"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "webdeveloperoffical@gmail.com",
+        "subject": "=🎉🎉🎉Hey! You got a new Lead: {{ $json['Full Name'] }}",
+        "emailType": "text",
+        "message": "=Hey Hari the Great, You got a new lead!! 🎉🎉🎉\nHere is everything you need to know about our new lead:\n\nName: {{ $json['Full Name'] }}\nOutcome: {{ $json['What you want to automate?'] }}\nTimeframe: {{ $json['What is your timeframe?'] }}\nBudget: {{ $json['What\\'s your Budget?'] }}\n\nSo, you are basically up-to-date to catch up with all the activities in our business!!",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        -192
+      ],
+      "id": "172361c2-02fd-437f-b6c7-20704923b20e",
+      "name": "Gmail",
+      "webhookId": "9f4bf692-6f3f-4470-884e-adcb786dd8b0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CKA2KwvndK06XStJ",
+          "name": "Hari the Great"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "webdeveloperoffical@gmail.com",
+        "subject": "=🎉🎉🎉Hey! You got a new Lead: {{ $json['Full Name'] }}",
+        "emailType": "text",
+        "message": "=Hey Hari the Great, You got a new lead!! 🎉🎉🎉\nHere is everything you need to know about our new lead:\n\nName: {{ $json['Full Name'] }}\nOutcome: {{ $json['What you want to automate?'] }}\nTimeframe: {{ $json['What is your timeframe?'] }}\nBudget: {{ $json['What\\'s your Budget?'] }}\n\nSo, you are basically up-to-date to catch up with all the activities in our business!!",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        0
+      ],
+      "id": "3a3e6a90-b381-4ea3-978a-c427df07bb5d",
+      "name": "Gmail1",
+      "webhookId": "9f4bf692-6f3f-4470-884e-adcb786dd8b0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CKA2KwvndK06XStJ",
+          "name": "Hari the Great"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "webdeveloperoffical@gmail.com",
+        "subject": "=🎉🎉🎉Hey! You got a new Lead: {{ $json['Full Name'] }}",
+        "emailType": "text",
+        "message": "=Hey Hari the Great, You got a new lead!! 🎉🎉🎉\nHere is everything you need to know about our new lead:\n\nName: {{ $json['Full Name'] }}\nOutcome: {{ $json['What you want to automate?'] }}\nTimeframe: {{ $json['What is your timeframe?'] }}\nBudget: {{ $json['What\\'s your Budget?'] }}\n\nSo, you are basically up-to-date to catch up with all the activities in our business!!",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        192
+      ],
+      "id": "0bfebb63-db0b-4587-8efc-8de2df7d86b5",
+      "name": "Gmail2",
+      "webhookId": "9f4bf692-6f3f-4470-884e-adcb786dd8b0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CKA2KwvndK06XStJ",
+          "name": "Hari the Great"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Lead Form": [
+      {
+        "json": {
+          "Full Name": "Teting",
+          "What you want to automate?": "Testing",
+          "What is your timeframe?": "6-8 Months",
+          "What's your Budget?": "$4999-$9999",
+          "submittedAt": "2025-09-25T17:45:42.903+05:30",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Lead Form": {
+      "main": [
+        [
+          {
+            "node": "Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Router": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Low Budget Lable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Medium Budget Lable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail2": {
+      "main": [
+        [
+          {
+            "node": "High Budget Lable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ddb48c5e-23cf-4cf9-ab4a-cbf9a2c0581b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c20c612ebfb7deab14765ae8b773cf7834a4df7b20ab707c6936bcae7a3237ef"
+  },
+  "id": "MSMb2NSKJVnWlveJ",
+  "tags": []
+}
